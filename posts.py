@@ -84,14 +84,13 @@ def index():
 # create a post
 @posts.route('/v1/api/posts/make_post', methods=['POST'])
 def make_post():
-    getform = request.get_json()
-    username = getform['username']
+    username = request.form['username']
     makep = User.query.filter_by(username=username).first()
     if makep:
-        username = getform['username']
-        title = getform['title']
-        text = getform['text']
-        subreddit = getform['subreddit']
+        username = request.form['username']
+        title = request.form['title']
+        text = request.form['text']
+        subreddit = request.form['subreddit']
         createtime = get_time()
         changetime = get_time()
         post = Post(username=username, title=title, text=text, subreddit=subreddit,
