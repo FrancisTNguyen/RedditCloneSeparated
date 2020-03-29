@@ -70,15 +70,16 @@ def index():
 # Register users
 @users.route('/v1/api/user/register', methods=['POST'])
 def register():
-    email = request.form['email']
-    username = request.form['username']
+    getform = request.get_json()
+    email = getform['email']
+    username = getform['username']
     regis = User.query.filter_by(email=email).first() and User.query.filter_by(username=username).first()
     if regis:
         return jsonify(message='Email or Username Already exists'), 409
     else:
-        username = request.form['username']
-        password = request.form['password']
-        karma = request.form['karma']
+        username = getform['username']
+        password = getform['password']
+        karma = getform['karma']
         createtime = get_time()
         changetime = get_time()
         user = User(username=username, email=email, password=password,
@@ -92,7 +93,8 @@ def register():
 # increment karma
 @users.route('/v1/api/user/add_karma', methods=['PUT'])
 def add_karma():
-    username = request.form['username']
+    getform = request.get_json()
+    username = getform['username']
     user = User.query.filter_by(username=username).first()
     if user:
         user.karma += 1
@@ -105,7 +107,8 @@ def add_karma():
 # decrement karma
 @users.route('/v1/api/user/sub_karma', methods=['PUT'])
 def sub_karma():
-    username = request.form['username']
+    getform = request.get_json()
+    username = getform['username']
     user = User.query.filter_by(username=username).first()
     if user:
         user.karma -= 1
@@ -118,10 +121,11 @@ def sub_karma():
 # update user's email
 @users.route('/v1/api/user/update_email', methods=['PUT'])
 def update_email():
-    username = request.form['username']
+    getform = request.get_json()
+    username = getform['username']
     usersemail = User.query.filter_by(username=username).first()
     if usersemail:
-        usersemail.email = request.form['email']
+        usersemail.email = getform['email']
         usersemail.createtime = get_time()
         db.session.commit()
         return jsonify(message='Email updated'), 202
